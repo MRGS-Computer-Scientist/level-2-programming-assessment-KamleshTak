@@ -3,6 +3,9 @@ from tkinter import ttk
 
 class FitTrackApp(tk.Tk):
     def __init__(self):
+        super().__init__()  # Initialize the parent class (tk.Tk)
+        self.width = 430
+        self.height = 932
         self.configure(bg="green")
 
         # Creating top navigation bar
