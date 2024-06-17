@@ -14,6 +14,9 @@ class FitTrackApp(tk.Tk):
         self.resizable(False, False)  # Make the window non-resizable
         self.configure(bg="green")
 
+        self.create_main_content()
+
+    def create_main_content(self):
         # Creating top navigation bar
         top_nav = tk.Frame(self, bg="black", height=70)  # Increased height for larger buttons
         top_nav.pack(fill="x")
@@ -177,28 +180,33 @@ class FitTrackApp(tk.Tk):
         self.custom_workout_frame.pack(pady=10)
 
     def open_profile_page(self):
-        self.profile_window = tk.Toplevel(self)
-        self.profile_window.geometry("300x200")
-        self.profile_window.title("Login")
+        for widget in self.winfo_children():
+            widget.destroy()
 
-        tk.Label(self.profile_window, text="Username").pack(pady=5)
+        self.profile_window = tk.Frame(self, bg="green")
+        self.profile_window.pack(pady=10)
+
+        tk.Label(self.profile_window, text="Username", bg="green", fg="black").pack(pady=5)
         self.username_entry = tk.Entry(self.profile_window)
         self.username_entry.pack(pady=5)
 
-        tk.Label(self.profile_window, text="Password").pack(pady=5)
+        tk.Label(self.profile_window, text="Password", bg="green", fg="black").pack(pady=5)
         self.password_entry = tk.Entry(self.profile_window, show="*")
         self.password_entry.pack(pady=5)
 
         login_button = tk.Button(self.profile_window, text="Login", command=self.check_login)
         login_button.pack(pady=10)
 
+        back_button = tk.Button(self.profile_window, text="Back", command=self.create_main_content)
+        back_button.pack(pady=10)
+
     def check_login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
         if username == "admin" and password == "password":
-            tk.Label(self.profile_window, text="Login Successful", fg="green").pack(pady=10)
+            tk.Label(self.profile_window, text="Login Successful", fg="green", bg="green").pack(pady=10)
         else:
-            tk.Label(self.profile_window, text="Login Failed", fg="red").pack(pady=10)
+            tk.Label(self.profile_window, text="Login Failed", fg="red", bg="green").pack(pady=10)
 
 if __name__ == "__main__":
     app = FitTrackApp()
