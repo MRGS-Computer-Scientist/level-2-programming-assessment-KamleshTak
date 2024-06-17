@@ -183,30 +183,83 @@ class FitTrackApp(tk.Tk):
         for widget in self.winfo_children():
             widget.destroy()
 
-        self.profile_window = tk.Frame(self, bg="green")
-        self.profile_window.pack(pady=10)
+        self.profile_frame = tk.Frame(self, bg="green")
+        self.profile_frame.pack(pady=10)
 
-        tk.Label(self.profile_window, text="Username", bg="green", fg="black").pack(pady=5)
-        self.username_entry = tk.Entry(self.profile_window)
+        self.is_login_mode = True
+
+        self.create_login_form()
+
+        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Sign Up", command=self.toggle_form)
+        self.toggle_button.pack(pady=10)
+
+        back_button = tk.Button(self.profile_frame, text="Back", command=self.create_main_content)
+        back_button.pack(pady=10)
+
+    def create_login_form(self):
+        for widget in self.profile_frame.winfo_children():
+            widget.destroy()
+
+        tk.Label(self.profile_frame, text="Username", bg="green", fg="black").pack(pady=5)
+        self.username_entry = tk.Entry(self.profile_frame)
         self.username_entry.pack(pady=5)
 
-        tk.Label(self.profile_window, text="Password", bg="green", fg="black").pack(pady=5)
-        self.password_entry = tk.Entry(self.profile_window, show="*")
+        tk.Label(self.profile_frame, text="Password", bg="green", fg="black").pack(pady=5)
+        self.password_entry = tk.Entry(self.profile_frame, show="*")
         self.password_entry.pack(pady=5)
 
-        login_button = tk.Button(self.profile_window, text="Login", command=self.check_login)
+        login_button = tk.Button(self.profile_frame, text="Login", command=self.check_login)
         login_button.pack(pady=10)
 
-        back_button = tk.Button(self.profile_window, text="Back", command=self.create_main_content)
-        back_button.pack(pady=10)
+        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Sign Up", command=self.toggle_form)
+        self.toggle_button.pack(pady=10)
+
+    def create_signup_form(self):
+        for widget in self.profile_frame.winfo_children():
+            widget.destroy()
+
+        tk.Label(self.profile_frame, text="Username", bg="green", fg="black").pack(pady=5)
+        self.username_entry = tk.Entry(self.profile_frame)
+        self.username_entry.pack(pady=5)
+
+        tk.Label(self.profile_frame, text="Password", bg="green", fg="black").pack(pady=5)
+        self.password_entry = tk.Entry(self.profile_frame, show="*")
+        self.password_entry.pack(pady=5)
+
+        tk.Label(self.profile_frame, text="Confirm Password", bg="green", fg="black").pack(pady=5)
+        self.confirm_password_entry = tk.Entry(self.profile_frame, show="*")
+        self.confirm_password_entry.pack(pady=5)
+
+        signup_button = tk.Button(self.profile_frame, text="Sign Up", command=self.check_signup)
+        signup_button.pack(pady=10)
+
+        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Login", command=self.toggle_form)
+        self.toggle_button.pack(pady=10)
+
+    def toggle_form(self):
+        if self.is_login_mode:
+            self.create_signup_form()
+            self.is_login_mode = False
+        else:
+            self.create_login_form()
+            self.is_login_mode = True
 
     def check_login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
         if username == "admin" and password == "password":
-            tk.Label(self.profile_window, text="Login Successful", fg="green", bg="green").pack(pady=10)
+            tk.Label(self.profile_frame, text="Login Successful", fg="green", bg="green").pack(pady=10)
         else:
-            tk.Label(self.profile_window, text="Login Failed", fg="red", bg="green").pack(pady=10)
+            tk.Label(self.profile_frame, text="Login Failed", fg="red", bg="green").pack(pady=10)
+
+    def check_signup(self):
+        username = self.username_entry.get()
+        password = self.password_entry.get()
+        confirm_password = self.confirm_password_entry.get()
+        if password == confirm_password:
+            tk.Label(self.profile_frame, text="Sign Up Successful", fg="green", bg="green").pack(pady=10)
+        else:
+            tk.Label(self.profile_frame, text="Passwords do not match", fg="red", bg="green").pack(pady=10)
 
 if __name__ == "__main__":
     app = FitTrackApp()
