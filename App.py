@@ -14,6 +14,8 @@ class FitTrackApp(tk.Tk):
         self.resizable(False, False)  # Make the window non-resizable
         self.configure(bg="green")
 
+        self.logged_in_username = None  # Store the logged-in username
+
         self.create_main_content()
 
     def create_main_content(self):
@@ -57,7 +59,12 @@ class FitTrackApp(tk.Tk):
 
         # Workout Table with increased height
         columns = ("exercise", "sets_reps")
-        self.workout_table = ttk.Treeview(self, columns=columns, show="headings", height=15)  # Increased height
+        
+        # Set up style
+        style = ttk.Style()
+        style.configure("Custom.Treeview", background="grey", fieldbackground="grey")
+        
+        self.workout_table = ttk.Treeview(self, columns=columns, show="headings", height=15, style="Custom.Treeview")  # Increased height
         self.workout_table.heading("exercise", text="Exercise")
         self.workout_table.heading("sets_reps", text="Sets x Reps")
 
@@ -65,18 +72,6 @@ class FitTrackApp(tk.Tk):
 
         # List of potential exercises
         self.workout_data = [
-            ("Squats", "3 x 10"),
-            ("Push-ups", "3 x 12"),
-            ("Plank", "3 x 30 seconds"),
-            ("Crunches", "3 x 15"),
-            ("Lunges", "3 x 10"),
-            ("Burpees", "3 x 12"),
-            ("Mountain Climbers", "3 x 30 seconds"),
-            ("Sit-ups", "3 x 15"),
-            ("Jumping Jacks", "3 x 30"),
-            ("Leg Raises", "3 x 12"),
-            ("Russian Twists", "3 x 15"),
-            ("Bicycle Crunches", "3 x 20"),
             ("Deadlifts", "3 x 10"),
             ("Bench Press", "3 x 12"),
             ("Shoulder Press", "3 x 10"),
@@ -95,15 +90,15 @@ class FitTrackApp(tk.Tk):
         ]
 
         self.current_date = datetime.strptime(self.date_label.cget("text"), "%m/%d/%Y")
-        
+
         # Buttons to choose between random workout and custom workout
         button_frame = tk.Frame(self, bg="green")
         button_frame.pack(pady=10)
 
-        random_workout_button = tk.Button(button_frame, text="Random Workout", command=self.load_workout)
+        random_workout_button = tk.Button(button_frame, text="Random Workout", command=self.load_workout, bg="grey", fg="black")
         random_workout_button.pack(side="left", padx=10)
 
-        custom_workout_button = tk.Button(button_frame, text="Custom Workout", command=self.show_custom_workout_frame)
+        custom_workout_button = tk.Button(button_frame, text="Custom Workout", command=self.show_custom_workout_frame, bg="grey", fg="black")
         custom_workout_button.pack(side="left", padx=10)
 
         # Frame for adding custom workouts (initially hidden)
@@ -119,11 +114,11 @@ class FitTrackApp(tk.Tk):
         self.sets_reps_entry = tk.Entry(self.custom_workout_frame)
         self.sets_reps_entry.grid(row=1, column=1)
 
-        add_button = tk.Button(self.custom_workout_frame, text="Add Workout", command=self.add_workout)
-        add_button.grid(row=2, columnspan=2, pady=10)
+        add_button = tk.Button(self.custom_workout_frame, text="Add Workout", command=self.add_workout, bg="grey", fg="black")
+        add_button.grid(row=2, column=0, pady=10)
 
-        remove_button = tk.Button(self.custom_workout_frame, text="Remove Selected Workout", command=self.remove_selected_workout)
-        remove_button.grid(row=3, columnspan=2, pady=10)
+        remove_button = tk.Button(self.custom_workout_frame, text="Remove Selected Workout", command=self.remove_selected_workout, bg="grey", fg="black")
+        remove_button.grid(row=2, column=1, pady=10)
 
         self.load_workout()
 
@@ -160,7 +155,7 @@ class FitTrackApp(tk.Tk):
             self.load_workout()
             top.destroy()
 
-        select_btn = tk.Button(top, text="Select Date", command=get_date)
+        select_btn = tk.Button(top, text="Select Date", command=get_date, bg="green", fg="black")
         select_btn.pack(pady=20)
 
     def add_workout(self):
@@ -190,11 +185,10 @@ class FitTrackApp(tk.Tk):
 
         self.create_login_form()
 
-        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Sign Up", command=self.toggle_form)
+        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Sign Up", command=self.toggle_form, bg="green", fg="black")
         self.toggle_button.pack(pady=10)
 
-        back_button = tk.Button(self.profile_frame, text="Back", command=self.create_main_content)
-        back_button.pack(pady=10)
+        self.create_back_button(self.profile_frame)
 
     def create_login_form(self):
         for widget in self.profile_frame.winfo_children():
@@ -208,11 +202,13 @@ class FitTrackApp(tk.Tk):
         self.password_entry = tk.Entry(self.profile_frame, show="*")
         self.password_entry.pack(pady=5)
 
-        login_button = tk.Button(self.profile_frame, text="Login", command=self.check_login)
+        login_button = tk.Button(self.profile_frame, text="Login", command=self.check_login, bg="green", fg="black")
         login_button.pack(pady=10)
 
-        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Sign Up", command=self.toggle_form)
+        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Sign Up", command=self.toggle_form, bg="green", fg="black")
         self.toggle_button.pack(pady=10)
+
+        self.create_back_button(self.profile_frame)
 
     def create_signup_form(self):
         for widget in self.profile_frame.winfo_children():
@@ -230,11 +226,17 @@ class FitTrackApp(tk.Tk):
         self.confirm_password_entry = tk.Entry(self.profile_frame, show="*")
         self.confirm_password_entry.pack(pady=5)
 
-        signup_button = tk.Button(self.profile_frame, text="Sign Up", command=self.check_signup)
+        signup_button = tk.Button(self.profile_frame, text="Sign Up", command=self.check_signup, bg="green", fg="black")
         signup_button.pack(pady=10)
 
-        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Login", command=self.toggle_form)
+        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Login", command=self.toggle_form, bg="green", fg="black")
         self.toggle_button.pack(pady=10)
+
+        self.create_back_button(self.profile_frame)
+
+    def create_back_button(self, frame):
+        back_button = tk.Button(frame, text="Back", command=self.create_main_content, bg="green", fg="black")
+        back_button.pack(pady=10)
 
     def toggle_form(self):
         if self.is_login_mode:
@@ -248,7 +250,8 @@ class FitTrackApp(tk.Tk):
         username = self.username_entry.get()
         password = self.password_entry.get()
         if username == "admin" and password == "password":
-            tk.Label(self.profile_frame, text="Login Successful", fg="green", bg="green").pack(pady=10)
+            self.logged_in_username = username
+            self.show_welcome_message()
         else:
             tk.Label(self.profile_frame, text="Login Failed", fg="red", bg="green").pack(pady=10)
 
@@ -257,9 +260,19 @@ class FitTrackApp(tk.Tk):
         password = self.password_entry.get()
         confirm_password = self.confirm_password_entry.get()
         if password == confirm_password:
-            tk.Label(self.profile_frame, text="Sign Up Successful", fg="green", bg="green").pack(pady=10)
+            tk.Label(self.profile_frame, text="Sign Up Successful", fg="blue", bg="green").pack(pady=10)
         else:
-            tk.Label(self.profile_frame, text="Passwords do not match", fg="red", bg="green").pack(pady=10)
+            tk.Label(self.profile_frame, text="Passwords do not match", fg="blue", bg="green").pack(pady=10)
+
+    def show_welcome_message(self):
+        for widget in self.profile_frame.winfo_children():
+            widget.destroy()
+
+        welcome_label = tk.Label(self.profile_frame, text=f"Welcome, {self.logged_in_username}!", font=("Helvetica", 18), bg="green", fg="black")
+        welcome_label.pack(pady=20)
+
+        logout_button = tk.Button(self.profile_frame, text="Logout", command=self.create_main_content, bg="green", fg="black")
+        logout_button.pack(pady=10)
 
 if __name__ == "__main__":
     app = FitTrackApp()
