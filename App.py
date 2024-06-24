@@ -39,7 +39,7 @@ class FitTrackApp(tk.Tk):
         title_label = tk.Label(title_frame, text="FIT TRACK", font=("Helvetica", 24), bg="green", fg="black")
         title_label.pack()
 
-        # Date controls
+        # Date controlsl
         date_frame = tk.Frame(title_frame, bg="green")
         date_frame.pack()
 
@@ -53,16 +53,22 @@ class FitTrackApp(tk.Tk):
         next_day_button = tk.Button(date_frame, text="▶", bg="green", fg="black", borderwidth=0, font=("Helvetica", 14), command=self.switch_to_next_day)
         next_day_button.pack(side="left", padx=10)
 
-        # Today's Workout Title
-        workout_title = tk.Label(self, text="Today's Workout", font=("Helvetica", 18), bg="green", fg="black")
-        workout_title.pack(pady=10)
+        # Today's Workout Title with Tips Button
+        workout_title_frame = tk.Frame(self, bg="green")
+        workout_title_frame.pack(pady=10)
+
+        workout_title = tk.Label(workout_title_frame, text="Today's Workout", font=("Helvetica", 18), bg="green", fg="black")
+        workout_title.pack(side="left")
+
+        tips_button = tk.Button(workout_title_frame, text="Tips", command=self.open_tips_window, bg="grey", fg="black", font=("Helvetica", 14))
+        tips_button.pack(side="left", padx=10)
 
         # Workout Table with increased height
         columns = ("exercise", "sets_reps")
         
         # Set up style
         style = ttk.Style()
-        style.configure("Custom.Treeview", background="grey", fieldbackground="grey")
+        style.configure("Custom.Treeview", background="white", fieldbackground="white")
         
         self.workout_table = ttk.Treeview(self, columns=columns, show="headings", height=15, style="Custom.Treeview")  # Increased height
         self.workout_table.heading("exercise", text="Exercise")
@@ -185,11 +191,6 @@ class FitTrackApp(tk.Tk):
 
         self.create_login_form()
 
-        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Sign Up", command=self.toggle_form, bg="green", fg="black")
-        self.toggle_button.pack(pady=10)
-
-        self.create_back_button(self.profile_frame)
-
     def create_login_form(self):
         for widget in self.profile_frame.winfo_children():
             widget.destroy()
@@ -249,7 +250,9 @@ class FitTrackApp(tk.Tk):
     def check_login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
-        if username == "admin" and password == "password":
+        if not username or not password:
+            tk.Label(self.profile_frame, text="Username or Password cannot be empty", fg="red", bg="green").pack(pady=10)
+        elif username == "admin" and password == "password":
             self.logged_in_username = username
             self.show_welcome_message()
         else:
@@ -259,10 +262,12 @@ class FitTrackApp(tk.Tk):
         username = self.username_entry.get()
         password = self.password_entry.get()
         confirm_password = self.confirm_password_entry.get()
-        if password == confirm_password:
-            tk.Label(self.profile_frame, text="Sign Up Successful", fg="blue", bg="green").pack(pady=10)
+        if not username or not password or not confirm_password:
+            tk.Label(self.profile_frame, text="All fields are required", fg="red", bg="green").pack(pady=10)
+        elif password != confirm_password:
+            tk.Label(self.profile_frame, text="Passwords do not match", fg="red", bg="green").pack(pady=10)
         else:
-            tk.Label(self.profile_frame, text="Passwords do not match", fg="blue", bg="green").pack(pady=10)
+            tk.Label(self.profile_frame, text="Sign Up Successful", fg="blue", bg="green").pack(pady=10)
 
     def show_welcome_message(self):
         for widget in self.profile_frame.winfo_children():
@@ -273,6 +278,28 @@ class FitTrackApp(tk.Tk):
 
         logout_button = tk.Button(self.profile_frame, text="Logout", command=self.create_main_content, bg="green", fg="black")
         logout_button.pack(pady=10)
+
+    def open_tips_window(self):
+        top = tk.Toplevel(self)
+        top.title("Workout Tips")
+        top.geometry("300x400")
+        top.configure(bg="green")
+
+        tips = [
+            "Stay hydrated throughout your workout.",
+            "Warm up before starting your exercises.",
+            "Focus on form over weight.",
+            "Include a mix of cardio and strength training.",
+            "Cool down and stretch after your workout.",
+            "Keep a consistent workout schedule.",
+            "Listen to your body and rest when needed."
+        ]
+
+        tips_label = tk.Label(top, text="Workout Tips", font=("Helvetica", 18), bg="green", fg="black")
+        tips_label.pack(pady=10)
+
+        for tip in tips:
+            tk.Label(top, text=f"- {tip}", font=("Helvetica", 12), bg="green", fg="black", wraplength=280).pack(anchor="w", padx=10, pady=5)
 
 if __name__ == "__main__":
     app = FitTrackApp()
