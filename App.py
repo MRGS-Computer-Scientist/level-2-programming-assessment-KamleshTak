@@ -3,7 +3,6 @@ from tkinter import ttk
 import random
 from datetime import datetime, timedelta
 from tkcalendar import Calendar
-import login
 
 class FitTrackApp(tk.Tk):
     def __init__(self):
@@ -14,54 +13,53 @@ class FitTrackApp(tk.Tk):
         self.resizable(False, False)  # Make the window non-resizable
         self.configure(bg="green")
 
-        self.logged_in_username = None  # Store the logged-in username
-
         self.create_main_content()
 
     def create_main_content(self):
+        # Clear existing content
+        for widget in self.winfo_children():
+            widget.destroy()
+
         # Creating top navigation bar
-        top_nav = tk.Frame(self, bg="black", height=70)  # Increased height for larger buttons
+        top_nav = tk.Frame(self, bg="black", height=50)  # Adjusted height for smaller buttons
         top_nav.pack(fill="x")
 
-        # Adding buttons to the top navigation bar with larger fonts
-        menu_button = tk.Button(top_nav, text="☰", bg="black", fg="white", borderwidth=0, font=("Helvetica", 20))
-        menu_button.pack(side="left", padx=20)  # Increased padding
+        # Adding buttons to the top navigation bar with smaller fonts
+        menu_button = tk.Button(top_nav, text="☰", bg="black", fg="white", borderwidth=0, font=("Helvetica", 16))
+        menu_button.pack(side="left", padx=10)  # Adjusted padding
 
-        home_button = tk.Button(top_nav, text="🏠", bg="black", fg="white", borderwidth=0, font=("Helvetica", 20))
+        home_button = tk.Button(top_nav, text="🏠", bg="black", fg="white", borderwidth=0, font=("Helvetica", 16), command=self.create_main_content)
         home_button.pack(side="left")
 
-        profile_button = tk.Button(top_nav, text="👤", bg="black", fg="white", borderwidth=0, font=("Helvetica", 20), command=self.open_profile_page)
-        profile_button.pack(side="right", padx=20)  # Increased padding
+        profile_button = tk.Button(top_nav, text="👤", bg="black", fg="white", borderwidth=0, font=("Helvetica", 16))
+        profile_button.pack(side="right", padx=10)  # Adjusted padding
 
         # Title
         title_frame = tk.Frame(self, bg="green")
         title_frame.pack(pady=10)
-        title_label = tk.Label(title_frame, text="FIT TRACK", font=("Helvetica", 24), bg="green", fg="black")
+        title_label = tk.Label(title_frame, text="FIT TRACK", font=("Helvetica", 20), bg="green", fg="black")
         title_label.pack()
 
-        # Date controlsl
+        # Date controls
         date_frame = tk.Frame(title_frame, bg="green")
         date_frame.pack()
 
-        prev_day_button = tk.Button(date_frame, text="◀", bg="green", fg="black", borderwidth=0, font=("Helvetica", 14), command=self.switch_to_previous_day)
+        prev_day_button = tk.Button(date_frame, text="◀", bg="green", fg="black", borderwidth=0, font=("Helvetica", 12), command=self.switch_to_previous_day)
         prev_day_button.pack(side="left", padx=10)
 
-        self.date_label = tk.Label(date_frame, text="10/6/2024", font=("Helvetica", 14), bg="green", fg="black")
+        self.date_label = tk.Label(date_frame, text="10/6/2024", font=("Helvetica", 12), bg="green", fg="black")
         self.date_label.pack(side="left")
         self.date_label.bind("<Button-1>", self.open_calendar)
 
-        next_day_button = tk.Button(date_frame, text="▶", bg="green", fg="black", borderwidth=0, font=("Helvetica", 14), command=self.switch_to_next_day)
+        next_day_button = tk.Button(date_frame, text="▶", bg="green", fg="black", borderwidth=0, font=("Helvetica", 12), command=self.switch_to_next_day)
         next_day_button.pack(side="left", padx=10)
 
-        # Today's Workout Title with Tips Button
+        # Today's Workout Title
         workout_title_frame = tk.Frame(self, bg="green")
         workout_title_frame.pack(pady=10)
 
-        workout_title = tk.Label(workout_title_frame, text="Today's Workout", font=("Helvetica", 18), bg="green", fg="black")
+        workout_title = tk.Label(workout_title_frame, text="Today's Workout", font=("Helvetica", 16), bg="green", fg="black")
         workout_title.pack(side="left")
-
-        tips_button = tk.Button(workout_title_frame, text="Tips", command=self.open_tips_window, bg="grey", fg="black", font=("Helvetica", 14))
-        tips_button.pack(side="left", padx=10)
 
         # Workout Table with increased height
         columns = ("exercise", "sets_reps")
@@ -101,11 +99,14 @@ class FitTrackApp(tk.Tk):
         button_frame = tk.Frame(self, bg="green")
         button_frame.pack(pady=10)
 
-        random_workout_button = tk.Button(button_frame, text="Random Workout", command=self.load_workout, bg="grey", fg="black")
-        random_workout_button.pack(side="left", padx=10)
+        random_workout_button = tk.Button(button_frame, text="Random Workout", command=self.load_workout, bg="grey", fg="black", font=("Helvetica", 12))
+        random_workout_button.pack(side="left", padx=5)
 
-        custom_workout_button = tk.Button(button_frame, text="Custom Workout", command=self.show_custom_workout_frame, bg="grey", fg="black")
-        custom_workout_button.pack(side="left", padx=10)
+        custom_workout_button = tk.Button(button_frame, text="Custom Workout", command=self.show_custom_workout_frame, bg="grey", fg="black", font=("Helvetica", 12))
+        custom_workout_button.pack(side="left", padx=5)
+
+        tips_button = tk.Button(button_frame, text="Tips", command=self.open_tips_window, bg="grey", fg="black", font=("Helvetica", 12))
+        tips_button.pack(side="left", padx=5)
 
         # Frame for adding custom workouts (initially hidden)
         self.custom_workout_frame = tk.Frame(self, bg="green")
@@ -180,110 +181,19 @@ class FitTrackApp(tk.Tk):
     def show_custom_workout_frame(self):
         self.custom_workout_frame.pack(pady=10)
 
-    def open_profile_page(self):
-        for widget in self.winfo_children():
-            widget.destroy()
-
-        self.profile_frame = tk.Frame(self, bg="green")
-        self.profile_frame.pack(pady=10)
-
-        self.is_login_mode = True
-
-        self.create_login_form()
-
-    def create_login_form(self):
-        for widget in self.profile_frame.winfo_children():
-            widget.destroy()
-
-        tk.Label(self.profile_frame, text="Username", bg="green", fg="black").pack(pady=5)
-        self.username_entry = tk.Entry(self.profile_frame)
-        self.username_entry.pack(pady=5)
-
-        tk.Label(self.profile_frame, text="Password", bg="green", fg="black").pack(pady=5)
-        self.password_entry = tk.Entry(self.profile_frame, show="*")
-        self.password_entry.pack(pady=5)
-
-        login_button = tk.Button(self.profile_frame, text="Login", command=self.check_login, bg="green", fg="black")
-        login_button.pack(pady=10)
-
-        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Sign Up", command=self.toggle_form, bg="green", fg="black")
-        self.toggle_button.pack(pady=10)
-
-        self.create_back_button(self.profile_frame)
-
-    def create_signup_form(self):
-        for widget in self.profile_frame.winfo_children():
-            widget.destroy()
-
-        tk.Label(self.profile_frame, text="Username", bg="green", fg="black").pack(pady=5)
-        self.username_entry = tk.Entry(self.profile_frame)
-        self.username_entry.pack(pady=5)
-
-        tk.Label(self.profile_frame, text="Password", bg="green", fg="black").pack(pady=5)
-        self.password_entry = tk.Entry(self.profile_frame, show="*")
-        self.password_entry.pack(pady=5)
-
-        tk.Label(self.profile_frame, text="Confirm Password", bg="green", fg="black").pack(pady=5)
-        self.confirm_password_entry = tk.Entry(self.profile_frame, show="*")
-        self.confirm_password_entry.pack(pady=5)
-
-        signup_button = tk.Button(self.profile_frame, text="Sign Up", command=self.check_signup, bg="green", fg="black")
-        signup_button.pack(pady=10)
-
-        self.toggle_button = tk.Button(self.profile_frame, text="Switch to Login", command=self.toggle_form, bg="green", fg="black")
-        self.toggle_button.pack(pady=10)
-
-        self.create_back_button(self.profile_frame)
-
-    def create_back_button(self, frame):
-        back_button = tk.Button(frame, text="Back", command=self.create_main_content, bg="green", fg="black")
-        back_button.pack(pady=10)
-
-    def toggle_form(self):
-        if self.is_login_mode:
-            self.create_signup_form()
-            self.is_login_mode = False
-        else:
-            self.create_login_form()
-            self.is_login_mode = True
-
-    def check_login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-        if not username or not password:
-            tk.Label(self.profile_frame, text="Username or Password cannot be empty", fg="red", bg="green").pack(pady=10)
-        elif username == "admin" and password == "password":
-            self.logged_in_username = username
-            self.show_welcome_message()
-        else:
-            tk.Label(self.profile_frame, text="Login Failed", fg="red", bg="green").pack(pady=10)
-
-    def check_signup(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-        confirm_password = self.confirm_password_entry.get()
-        if not username or not password or not confirm_password:
-            tk.Label(self.profile_frame, text="All fields are required", fg="red", bg="green").pack(pady=10)
-        elif password != confirm_password:
-            tk.Label(self.profile_frame, text="Passwords do not match", fg="red", bg="green").pack(pady=10)
-        else:
-            tk.Label(self.profile_frame, text="Sign Up Successful", fg="blue", bg="green").pack(pady=10)
-
-    def show_welcome_message(self):
-        for widget in self.profile_frame.winfo_children():
-            widget.destroy()
-
-        welcome_label = tk.Label(self.profile_frame, text=f"Welcome, {self.logged_in_username}!", font=("Helvetica", 18), bg="green", fg="black")
-        welcome_label.pack(pady=20)
-
-        logout_button = tk.Button(self.profile_frame, text="Logout", command=self.create_main_content, bg="green", fg="black")
-        logout_button.pack(pady=10)
-
     def open_tips_window(self):
-        top = tk.Toplevel(self)
-        top.title("Workout Tips")
-        top.geometry("300x400")
+        # Close the main window and open the tips and game window
+        self.destroy()
+        top = tk.Toplevel()
+        top.title("Tips and Click Game")
+        top.geometry("300x600")
         top.configure(bg="green")
+
+        tips_frame = tk.Frame(top, bg="green")
+        tips_frame.pack(pady=10)
+
+        tips_label = tk.Label(tips_frame, text="Workout Tips", font=("Helvetica", 16), bg="green", fg="black")
+        tips_label.pack(pady=10)
 
         tips = [
             "Stay hydrated throughout your workout.",
@@ -295,11 +205,35 @@ class FitTrackApp(tk.Tk):
             "Listen to your body and rest when needed."
         ]
 
-        tips_label = tk.Label(top, text="Workout Tips", font=("Helvetica", 18), bg="green", fg="black")
-        tips_label.pack(pady=10)
-
         for tip in tips:
-            tk.Label(top, text=f"- {tip}", font=("Helvetica", 12), bg="green", fg="black", wraplength=280).pack(anchor="w", padx=10, pady=5)
+            tk.Label(tips_frame, text=f"- {tip}", font=("Helvetica", 12), bg="green", fg="black", wraplength=280).pack(anchor="w", padx=10, pady=5)
+
+        click_game_frame = tk.Frame(top, bg="green")
+        click_game_frame.pack(pady=10)
+
+        click_game_label = tk.Label(click_game_frame, text="Click Game", font=("Helvetica", 16), bg="green", fg="black")
+        click_game_label.pack(pady=10)
+
+        self.click_count = 0
+
+        def increment_counter():
+            self.click_count += 1
+            counter_label.config(text=f"Clicks: {self.click_count}")
+
+        click_button = tk.Button(click_game_frame, text="Click Me!", command=increment_counter, bg="grey", fg="black", font=("Helvetica", 12))
+        click_button.pack(pady=10)
+
+        counter_label = tk.Label(click_game_frame, text=f"Clicks: {self.click_count}", font=("Helvetica", 12), bg="green", fg="black")
+        counter_label.pack(pady=10)
+
+        # Add a home button to go back to the main screen
+        home_button = tk.Button(top, text="Home", command=lambda: self.reopen_main_screen(top), bg="grey", fg="black", font=("Helvetica", 12))
+        home_button.pack(pady=10)
+
+    def reopen_main_screen(self, top):
+        top.destroy()
+        new_app = FitTrackApp()
+        new_app.mainloop()
 
 if __name__ == "__main__":
     app = FitTrackApp()
